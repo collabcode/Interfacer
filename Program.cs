@@ -128,10 +128,52 @@ namespace Interfacer
         {
             Console.WriteLine("Hello World!");
 
-            DataTable dtContent = GetDataTableFromExcel("temp//Definition.xlsx", true, 0);
-            foreach (var row in dtContent.Rows)
+            DataTable interfaceDefinitions = GetDataTableFromExcel("temp//Definition.xlsx", true, 0);
+            DataTable interfaceDetails = GetDataTableFromExcel("temp//Definition.xlsx", true, 1);
+            DataTable fieldDefinition = GetDataTableFromExcel("temp//Definition.xlsx", true, 2);
+
+
+            foreach (DataRow idRow in interfaceDefinitions.Rows)
             {
-                Console.WriteLine(row);
+                if (idRow[2].ToString() == "CSV")
+                {
+                    if (idRow[3].ToString() == "MSSQLServer")
+                    {
+
+                        var sourceFileLocation = "";
+                        var destinationDatabaseServer = "";
+                        var destinationDatabaseName = "";
+                        var destinationTableName = "";
+
+                        foreach (DataRow ideRow in interfaceDetails.Rows)
+                        {
+                            if (ideRow[1].ToString() == idRow[0].ToString())
+                            {
+                                switch (ideRow[2].ToString())
+                                {
+                                    case "SourceFileLocation":
+                                        sourceFileLocation = ideRow[3].ToString().Replace("/", "//");
+                                        break;
+                                    case "destinationDatabaseServer":
+                                        destinationDatabaseServer = ideRow[3].ToString();
+                                        break;
+                                    case "DestinationDatabaseName":
+                                        destinationDatabaseName = ideRow[3].ToString();
+                                        break;
+                                    case "DestinationTableName":
+                                        destinationTableName = ideRow[3].ToString();
+                                        break;
+
+                                }
+
+
+                            }
+                        }
+
+                        var result = ReadInCSV(sourceFileLocation);
+
+                    }
+                }
             }
 
             //var result = ReadInCSV("temp//test.csv");
